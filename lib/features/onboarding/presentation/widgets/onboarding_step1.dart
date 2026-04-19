@@ -56,7 +56,7 @@ class OnboardingStep1 extends StatelessWidget {
                         ),
                       ),
         
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 24),
         
                       const Text(
                         'Build Your Brand Identity',
@@ -78,7 +78,7 @@ class OnboardingStep1 extends StatelessWidget {
                         ),
                       ),
         
-                      const Spacer(),
+                      const SizedBox(height: 20),
         
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -98,7 +98,7 @@ class OnboardingStep1 extends StatelessWidget {
                         ],
                       ),
         
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
         
                       SizedBox(
                         width: double.infinity,

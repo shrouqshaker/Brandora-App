@@ -78,7 +78,7 @@ class _StoreScreenState extends State<StoreScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("\$${product.price}", style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+                                  Text("${product.price} ج.م", style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
                                     onPressed: () => productsData.removeProduct(product.id!),

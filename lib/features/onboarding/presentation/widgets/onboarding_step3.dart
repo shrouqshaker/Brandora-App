@@ -76,7 +76,7 @@ class OnboardingStep3 extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 24),
                       const Text(
                         'Track Orders & Sales',
                         textAlign: TextAlign.center,
@@ -96,7 +96,7 @@ class OnboardingStep3 extends StatelessWidget {
                           height: 1.5,
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -114,7 +114,7 @@ class OnboardingStep3 extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         height: 56,

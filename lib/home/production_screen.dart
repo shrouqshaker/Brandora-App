@@ -27,6 +27,8 @@ class _ProductionScreenState extends State<ProductionScreen> {
   final TextEditingController _productQtyController = TextEditingController();
   final TextEditingController _manualPriceController = TextEditingController(); 
   final TextEditingController _marginController = TextEditingController();
+  final TextEditingController _additionalExpensesController = TextEditingController();
+  final TextEditingController _purchasePriceController = TextEditingController();
 
   String? _selectedMaterial; 
   String? _errorMessage; 
@@ -70,9 +72,24 @@ void initState() {
   }
 
   void _updateFinalPrice() {
+    double productQty = double.tryParse(_productQtyController.text) ?? 1.0;
+    if (productQty <= 0) productQty = 1.0;
+
     double marginPercent = double.tryParse(_marginController.text) ?? 0.0;
+    double additionalExpenses = double.tryParse(_additionalExpensesController.text) ?? 0.0;
+    double purchasePrice = double.tryParse(_purchasePriceController.text) ?? 0.0;
+
+    double baseCost;
+    if (_includesMaterials) {
+      baseCost = _totalMaterialsCost + additionalExpenses;
+    } else {
+      baseCost = purchasePrice + additionalExpenses;
+    }
+
+    double costPerUnit = baseCost / productQty;
+
     setState(() {
-      _finalPriceWithMargin = _totalMaterialsCost + (_totalMaterialsCost * (marginPercent / 100));
+      _finalPriceWithMargin = costPerUnit + (costPerUnit * (marginPercent / 100));
     });
   }
 
@@ -105,9 +122,6 @@ void initState() {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              Text("Add New Product", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor)),
-              const SizedBox(height: 30),
-        
               Center(child: _buildPhotoUploadSection()),
               const SizedBox(height: 30),
         
@@ -115,18 +129,19 @@ void initState() {
               _buildField("e.g. Polyethylene Tubing", controller: _productNameController),
               const SizedBox(height: 20),
         
-              _buildLabel("QUANTITY"),
-              _buildField("0", controller: _productQtyController, isNumber: true),
+              _buildLabel("BATCH QUANTITY"),
+              _buildField("0", controller: _productQtyController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
               const SizedBox(height: 20),
-        
-              if (!_includesMaterials) ...[
-                _buildLabel("UNIT PRICE (\$)"),
-                _buildField("0.00", controller: _manualPriceController, isNumber: true),
-                const SizedBox(height: 20),
-              ],
         
               _buildToggleCard(),
               const SizedBox(height: 25),
+        
+              if (!_includesMaterials) ...[
+                _buildLabel("PURCHASE PRICE (ج.م)"),
+                _buildField("Total batch purchase price", controller: _purchasePriceController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
+                const SizedBox(height: 20),
+                _buildManualPricingCard(),
+              ],
         
               if (_includesMaterials) ...[
                 _buildMaterialsUsedCard(availableMaterials, materialsData),
@@ -214,9 +229,7 @@ void initState() {
                 // 5. All valid — show loading and submit
                 setState(() => _isSubmitting = true);
 
-                String finalPrice = _includesMaterials 
-                    ? _finalPriceWithMargin.toStringAsFixed(2) 
-                    : _manualPriceController.text;
+                String finalPrice = _finalPriceWithMargin.toStringAsFixed(2);
 
                 final success = await productsData.addProduct(ProductModel(
                   name: _productNameController.text,
@@ -324,6 +337,8 @@ void initState() {
     _productQtyController.clear(); 
     _manualPriceController.clear();
     _marginController.clear();
+    _additionalExpensesController.clear();
+    _purchasePriceController.clear();
     setState(() { 
       _addedMaterials.clear(); 
       _totalMaterialsCost = 0.0; 
@@ -345,27 +360,57 @@ void initState() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildLabel("PROFIT MARGIN (%)"),
-          Container(
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            child: TextField(
-              controller: _marginController,
-              keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFinalPrice(),
-              decoration: const InputDecoration(
-                hintText: "e.g. 20",
-                suffixText: "% ",
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(18),
-              ),
-            ),
-          ),
+          _buildPricingField(_marginController),
+          const SizedBox(height: 15),
+          _buildLabel("ADDITIONAL EXPENSES (ج.م)"),
+          _buildPricingField(_additionalExpensesController),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
-          _buildPriceRow("Total Materials Cost", "\$${_totalMaterialsCost.toStringAsFixed(2)}", Colors.grey),
+          _buildPriceRow("Total Materials Cost", "${_totalMaterialsCost.toStringAsFixed(2)} ج.م", Colors.grey),
           const SizedBox(height: 8),
-          _buildPriceRow("Final Selling Price", "\$${_finalPriceWithMargin.toStringAsFixed(2)}", primaryColor, isBold: true),
+          _buildPriceRow("Final Price Per Unit", "${_finalPriceWithMargin.toStringAsFixed(2)} ج.م", primaryColor, isBold: true),
         ],
+      ),
+    );
+  }
+
+  Widget _buildManualPricingCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F7FF),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildLabel("PROFIT MARGIN (%)"),
+          _buildPricingField(_marginController),
+          const SizedBox(height: 15),
+          _buildLabel("ADDITIONAL EXPENSES (ج.م)"),
+          _buildPricingField(_additionalExpensesController),
+          const SizedBox(height: 20),
+          const Divider(),
+          const SizedBox(height: 10),
+          _buildPriceRow("Final Price Per Unit", "${_finalPriceWithMargin.toStringAsFixed(2)} ج.م", primaryColor, isBold: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPricingField(TextEditingController controller) {
+    return Container(
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+      child: TextField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        onChanged: (value) => _updateFinalPrice(),
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(15),
+        ),
       ),
     );
   }

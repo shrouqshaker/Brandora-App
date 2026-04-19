@@ -98,12 +98,12 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
         
               const SizedBox(height: 24),
         
-              _buildLabel("UNIT PRICE (\$)"),
+              _buildLabel("UNIT PRICE (ج.م)"),
               _buildTextField(
                 hint: "e.g. 5.80", 
                 controller: priceController, 
                 isNumber: true,
-                prefix: const Icon(Icons.attach_money, size: 18, color: Color(0xFF3F51B5)),
+                prefix: const Icon(Icons.money_outlined, size: 18, color: Color(0xFF3F51B5)),
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
               ),
         
