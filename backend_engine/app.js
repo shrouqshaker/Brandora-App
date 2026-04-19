@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const admin = require('firebase-admin');
 const path = require('path');
 require('dotenv').config();
+const cors = require('cors');
 
 // ─── Firebase Admin ──────────────────────────────────────────────────────────
 let serviceAccount;
@@ -16,6 +17,7 @@ console.log(' Firebase Admin Initialized');
 
 // ─── Express Setup ───────────────────────────────────────────────────────────
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Serve uploaded product images as static files
