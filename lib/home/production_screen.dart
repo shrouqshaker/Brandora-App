@@ -135,7 +135,7 @@ void initState() {
               const SizedBox(height: 25),
         
               if (!_includesMaterials) ...[
-                _buildLabel("PURCHASE PRICE (ج.م)"),
+                _buildLabel("PURCHASE PRICE (EGP)"),
                 _buildField("Total batch purchase price", controller: _purchasePriceController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
                 const SizedBox(height: 20),
                 _buildManualPricingCard(),
