@@ -26,7 +26,7 @@ const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://lo
 mongoose.connect(mongoURI)
     .then(() => console.log(' Connected to MongoDB'))
     .catch(err => {
-        console.error('❌ MongoDB Connection Error:', err.message);
+        console.error('MongoDB Connection Error:', err.message);
         process.exit(1);
     });
 
