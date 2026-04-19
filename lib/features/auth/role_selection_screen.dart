@@ -9,7 +9,6 @@ class RoleSelectionScreen extends StatefulWidget {
 }
 
 class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
-  // متغير لتحديد الكارت المختار
   int selectedRole = 0;
   final Color primaryColor = const Color(0xFF3F51B5);
 
@@ -23,7 +22,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // العنوان الكبير - Bold جداً وبدون سهم فوقه
               const Text(
                 "Choose how you\nwant to use the\nplatform.",
                 style: TextStyle(
@@ -40,7 +38,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
               ),
               const SizedBox(height: 40),
 
-              // الكروت
               _buildRoleCard(
                 index: 0,
                 title: "Customer",
@@ -66,14 +63,12 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
               const Spacer(),
 
-              // زرار Continue فقط في الأسفل
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     // 0 = Customer, 1 = Seller, 2 = Both
                     if (selectedRole == 1 || selectedRole == 2) {
-                      // لو اختار Seller أو Both يروح لصفحة الـ Inventory
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -81,7 +76,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         ),
                       );
                     } else {
-                      // لو اختار Customer يروح لصفحة تانية (مثلاً الـ Market)
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Redirecting to Market..."),
@@ -114,7 +108,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     );
   }
 
-  // الـ Widget الخاص بالكارت (نفس المنطق السابق مع تحسين الشكل)
   Widget _buildRoleCard({
     required int index,
     required String title,
@@ -186,7 +179,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                 ],
               ),
             ),
-            // الدائرة الصغيرة اللي على اليمين
             Container(
               width: 22,
               height: 22,

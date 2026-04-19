@@ -28,19 +28,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. استخدمنا MultiProvider عشان يشيل أكتر من كلاس داتا
     return MultiProvider(
       providers: [
-        // 2. بنعرف كلاس المواد الخام
         ChangeNotifierProvider(create: (context) => MaterialsData()),
-        // 3. بنعرف كلاس المنتجات (اللي هيظهر في الستور)
         ChangeNotifierProvider(create: (context) => ProductsData()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Brandora App',
         theme: ThemeData(
-          primaryColor: const Color(0xFF3F51B5), // لون براندورا الأساسي
+          primaryColor: const Color(0xFF3F51B5),
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3F51B5)),
         ),
         home: seenOnboarding ? const LoginScreen() : const OnboardingMain(),
@@ -60,7 +57,6 @@ class MyApp extends StatelessWidget {
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
-// //دى بدايه علشان الفايربيز يشتغل
 //   await Firebase.initializeApp(
 //     options: DefaultFirebaseOptions.currentPlatform,
 //   );

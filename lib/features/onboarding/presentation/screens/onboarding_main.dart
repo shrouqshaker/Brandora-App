@@ -40,7 +40,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
       body: SafeArea(
         child: PageView(
           controller: _pageController,
-          physics: const BouncingScrollPhysics(), //دي علشان اقدر اسحب بالايد
+          physics: const BouncingScrollPhysics(),
           children: [
             OnboardingStep1(onNext: _onNext, onSkip: _onSkip),
             OnboardingStep2(onNext: _onNext, onBack: _onBack, onSkip: _onSkip),

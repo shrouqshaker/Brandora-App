@@ -1,20 +1,20 @@
-# Brandora App 🛍️
+# Brandora App
 
 Brandora App is a complete inventory and store management system. It consists of a mobile application built with **Flutter** and a backend built with **Node.js, Express, and MongoDB**.
 
-## 📌 Features
+## Features
 - **Firebase Authentication**: Secure user login and registration.
 - **Raw Materials Management**: Add, update, and track raw materials including quantities, prices, and units (kg, liter, meter, piece).
 - **Products Management**: Create finished products, link them to raw materials (which automatically deducts from raw material stock upon production), and upload product images.
 - **RESTful API**: A fully functional Node.js backend to handle data storage securely in MongoDB.
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Frontend**: Flutter, Provider (State Management), HTTP.
 - **Backend**: Node.js, Express.js.
 - **Database**: MongoDB (Mongoose).
 - **Authentication**: Firebase Auth & Firebase Admin SDK.
 
-## 🚀 How to Run the App (Locally)
+## How to Run the App (Locally)
 
 ### 1. Backend Setup
 1. Open a terminal and navigate to the `backend_engine` folder:
@@ -43,7 +43,7 @@ Brandora App is a complete inventory and store management system. It consists of
    flutter run
    ```
 
-## 🌍 Cloud Deployment (Railway)
+## Cloud Deployment (Railway)
 
 To host the backend online so it can be accessed from any device anywhere:
 1. Upload the entire project to **GitHub**.

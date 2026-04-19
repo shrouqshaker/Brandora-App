@@ -12,7 +12,7 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     serviceAccount = require('./serviceAccountKey.json');
 }
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-console.log('✅ Firebase Admin Initialized');
+console.log(' Firebase Admin Initialized');
 
 // ─── Express Setup ───────────────────────────────────────────────────────────
 const app = express();
@@ -24,7 +24,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ─── MongoDB ─────────────────────────────────────────────────────────────────
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://localhost:27017/brandora_db';
 mongoose.connect(mongoURI)
-    .then(() => console.log('✅ Connected to MongoDB'))
+    .then(() => console.log(' Connected to MongoDB'))
     .catch(err => {
         console.error('❌ MongoDB Connection Error:', err.message);
         process.exit(1);
@@ -37,7 +37,7 @@ const productRoutes = require('./routes/productRoutes');
 app.use('/api/materials', materialRoutes);
 app.use('/api/products', productRoutes);
 
-app.get('/', (req, res) => res.json({ status: 'Brandora Backend is Running ✅' }));
+app.get('/', (req, res) => res.json({ status: 'Brandora Backend is Running ' }));
 
 // ─── Global Error Handler ────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
@@ -47,4 +47,4 @@ app.use((err, req, res, next) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));

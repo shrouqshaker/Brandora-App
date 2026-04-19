@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-// تأكد من أن المسارات صحيحة في مشروعك
 import 'package:winterproject/home/data.dart'; 
 import 'add_material_screen.dart'; 
 
@@ -242,7 +241,7 @@ void initState() {
                 if (!mounted) return;
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Product Added Successfully! ✅'), backgroundColor: Colors.green),
+                    const SnackBar(content: Text('Product Added Successfully! '), backgroundColor: Colors.green),
                   );
                   _clearFields();
                 } else {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // ضروري عشان الـ FilteringTextInputFormatter
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:winterproject/home/data.dart'; 
 
@@ -77,7 +77,6 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
                           hint: "e.g. 2500", 
                           controller: quantityController, 
                           isNumber: true,
-                          // يسمح فقط بالأرقام والعلامة العشرية
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                         ),
                       ],
@@ -105,7 +104,6 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
                 controller: priceController, 
                 isNumber: true,
                 prefix: const Icon(Icons.attach_money, size: 18, color: Color(0xFF3F51B5)),
-                // يسمح فقط بالأرقام والعلامة العشرية
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
               ),
         
@@ -130,7 +128,6 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // تحسين الـ Validation للتأكد من أنها أرقام صالحة
                     final String name = nameController.text.trim();
                     final String qtyStr = quantityController.text.trim();
                     final String priceStr = priceController.text.trim();
@@ -140,7 +137,6 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
                         selectedUnit != null &&
                         priceStr.isNotEmpty) {
                       
-                      // تأكيد إضافي أن الكمية والسعر أرقام فعلاً قبل الحفظ
                       if (double.tryParse(qtyStr) == null || double.tryParse(priceStr) == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Please enter valid numbers for quantity and price'), backgroundColor: Colors.orange),
@@ -168,7 +164,7 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
 
                       if (success) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Material Saved Successfully! ✅'), backgroundColor: Colors.green),
+                          const SnackBar(content: Text('Material Saved Successfully! '), backgroundColor: Colors.green),
                         );
                         Navigator.pop(context);
                       } else {
@@ -221,7 +217,7 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
     required TextEditingController controller, 
     bool isNumber = false, 
     Widget? prefix,
-    List<TextInputFormatter>? inputFormatters, // إضافة باراميتر الفلتر
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -231,7 +227,7 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: isNumber ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-        inputFormatters: inputFormatters, // تطبيق الفلتر هنا
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),

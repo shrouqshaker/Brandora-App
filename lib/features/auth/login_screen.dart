@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           if (isLogin) {
-                            // 🔥 LOGIN
+                            // � LOGIN
                             await FirebaseAuth.instance.signInWithEmailAndPassword(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
@@ -153,7 +153,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SnackBar(content: Text("Login Successful")),
                             );
 
-                            // ✅ الانتقال للصفحة الجديدة
                             await Future.delayed(const Duration(milliseconds: 500));
 
                             if (!context.mounted) return;
@@ -165,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
 
                           } else {
-                            // 🔥 REGISTER
+                            // � REGISTER
                             String email = emailController.text.trim();
                             String password = passwordController.text.trim();
 

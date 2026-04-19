@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'inventory_screen.dart'; // ملف الانفنتوري بتاعك
-import 'production_screen.dart'; // ملف البرودكشن بتاعك
+import 'inventory_screen.dart';
+import 'production_screen.dart';
 import 'store_screen.dart';
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -10,14 +10,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 2; // نبدأ بالانفنتوري كديفولت
+  int _selectedIndex = 2;
 
-  // قائمة الصفحات اللي هيتنقل بينها
   final List<Widget> _pages = [
     const StoreScreen(),                           // Index 0
     const Center(child: Text("Dashboard Page")),  // Index 1
     const InventoryScreen(),                      // Index 2
-    const ProductionScreen(),                     // Index 3 (اللي هنعمله حالا)
+    const ProductionScreen(),
     const Center(child: Text("Account Page")),    // Index 4
   ];
 

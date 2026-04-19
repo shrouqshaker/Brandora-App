@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:winterproject/home/data.dart'; // تأكدي من المسار الصحيح لملف data.dart
-import 'package:winterproject/home/add_material_screen.dart'; // تأكدي من المسار الصحيح
+import 'package:winterproject/home/data.dart';
+import 'package:winterproject/home/add_material_screen.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -11,7 +11,7 @@ class InventoryScreen extends StatefulWidget {
 }
 
 class _InventoryScreenState extends State<InventoryScreen> {
-  int selectedTab = 1; // التاب الافتراضي هو Materials
+  int selectedTab = 1;
   final Color primaryColor = const Color(0xFF3F51B5);
 
  @override
@@ -25,7 +25,6 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-    // أهم سطر: الاستماع للتغييرات في البيانات
     final materialsData = Provider.of<MaterialsData>(context);
     final materials = materialsData.materials;
 
@@ -60,7 +59,6 @@ void initState() {
               _buildTabs(),
               const SizedBox(height: 24),
 
-              // عرض القائمة أو الحالات الفارغة
               Expanded(
                 child: selectedTab == 1
                     ? materialsData.isLoading
@@ -76,13 +74,11 @@ void initState() {
         ),
       ),
 
-      // زر الإضافة
       floatingActionButton: selectedTab == 1 ? _buildFloatingButton() : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  // --- بناء قائمة المواد الديناميكية ---
   Widget _buildMaterialsList(List<MaterialModel> materials, MaterialsData materialsData) {
     if (materials.isEmpty) {
       return const Center(
@@ -100,7 +96,6 @@ void initState() {
       itemBuilder: (context, index) {
         final item = materials[index];
         return GestureDetector(
-          // عند الضغط على الكارت نفتح صفحة التعديل
           onTap: () {
             Navigator.push(
               context,
@@ -178,7 +173,6 @@ void initState() {
     );
   }
 
-  // --- Widgets المساعدة ---
 
   Widget _buildHeader() {
     return Row(
