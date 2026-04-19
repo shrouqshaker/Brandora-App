@@ -86,10 +86,8 @@ void initState() {
       baseCost = purchasePrice + additionalExpenses;
     }
 
-    double costPerUnit = baseCost / productQty;
-
     setState(() {
-      _finalPriceWithMargin = costPerUnit + (costPerUnit * (marginPercent / 100));
+      _finalPriceWithMargin = baseCost + (baseCost * (marginPercent / 100));
     });
   }
 
@@ -362,14 +360,14 @@ void initState() {
           _buildLabel("PROFIT MARGIN (%)"),
           _buildPricingField(_marginController),
           const SizedBox(height: 15),
-          _buildLabel("ADDITIONAL EXPENSES (ج.م)"),
+          _buildLabel("ADDITIONAL EXPENSES (EGP)"),
           _buildPricingField(_additionalExpensesController),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
-          _buildPriceRow("Total Materials Cost", "${_totalMaterialsCost.toStringAsFixed(2)} ج.م", Colors.grey),
+          _buildPriceRow("Total Materials Cost", "${_totalMaterialsCost.toStringAsFixed(2)} EGP", Colors.grey),
           const SizedBox(height: 8),
-          _buildPriceRow("Final Price Per Unit", "${_finalPriceWithMargin.toStringAsFixed(2)} ج.م", primaryColor, isBold: true),
+          _buildPriceRow("Final Selling Price", "${_finalPriceWithMargin.toStringAsFixed(2)} EGP", primaryColor, isBold: true),
         ],
       ),
     );
@@ -389,12 +387,12 @@ void initState() {
           _buildLabel("PROFIT MARGIN (%)"),
           _buildPricingField(_marginController),
           const SizedBox(height: 15),
-          _buildLabel("ADDITIONAL EXPENSES (ج.م)"),
+          _buildLabel("ADDITIONAL EXPENSES (EGP)"),
           _buildPricingField(_additionalExpensesController),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
-          _buildPriceRow("Final Price Per Unit", "${_finalPriceWithMargin.toStringAsFixed(2)} ج.م", primaryColor, isBold: true),
+          _buildPriceRow("Final Selling Price", "${_finalPriceWithMargin.toStringAsFixed(2)} EGP", primaryColor, isBold: true),
         ],
       ),
     );

@@ -98,7 +98,7 @@ class _AddMaterialScreenState extends State<AddMaterialScreen> {
         
               const SizedBox(height: 24),
         
-              _buildLabel("UNIT PRICE (ج.م)"),
+              _buildLabel("UNIT PRICE (EGP)"),
               _buildTextField(
                 hint: "e.g. 5.80", 
                 controller: priceController, 

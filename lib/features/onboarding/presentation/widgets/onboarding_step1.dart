@@ -17,12 +17,9 @@ class OnboardingStep1 extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
                     children: [
                       Align(
                         alignment: Alignment.topRight,
@@ -125,8 +122,6 @@ class OnboardingStep1 extends StatelessWidget {
                       const SizedBox(height: 24),
                     ],
                   ),
-                ),
-              ),
             ),
           );
         },

@@ -151,7 +151,7 @@ void initState() {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "${item.price} ج.م",
+                      "${item.price} EGP",
                       style: TextStyle(
                         fontWeight: FontWeight.bold, 
                         color: primaryColor,
