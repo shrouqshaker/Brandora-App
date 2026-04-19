@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 ///   For a real device, change baseUrl to your machine's LAN IP, e.g. 192.168.1.x
 /// ─────────────────────────────────────────────────────────────────────────────
 class ApiService {
-  static const String baseUrl = 'https://brandora-app-production.up.railway.app/api';
+  static const String baseUrl = 'https://brandora-app-production-536f.up.railway.app/api';
 
   // ── Get a fresh ID token from Firebase ──────────────────────────────────────
   static Future<String?> _getToken() async {
