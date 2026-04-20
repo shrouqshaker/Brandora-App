@@ -1,0 +1,7 @@
+{
+  "name": "brandora-root",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd backend_engine && npm install && node app.js"
+  }
+}
