@@ -8,13 +8,18 @@ const cors = require('cors');
 
 // ─── Firebase Admin ──────────────────────────────────────────────────────────
 let serviceAccount;
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-} else {
-    serviceAccount = require('./serviceAccountKey.json');
+try {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } else {
+        serviceAccount = require('./serviceAccountKey.json');
+    }
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    console.log('✅ Firebase Admin Initialized');
+} catch (error) {
+    console.error('❌ Firebase Admin Initialization Error:', error.message);
+    console.error('Make sure FIREBASE_SERVICE_ACCOUNT is set in Railway Variables.');
 }
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-console.log(' Firebase Admin Initialized');
 
 // ─── Express Setup ───────────────────────────────────────────────────────────
 const app = express();

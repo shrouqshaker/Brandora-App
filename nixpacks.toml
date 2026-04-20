@@ -1,8 +1,11 @@
+[providers]
+node = true
+
 [phases.setup]
-nixPkgs = ['nodejs']
+nixPkgs = ["nodejs", "npm"]
 
 [phases.install]
-cmds = ['cd backend_engine && npm install']
+cmds = ["npm install --prefix backend_engine"]
 
 [start]
-cmd = 'cd backend_engine && node app.js'
+cmd = "cd backend_engine && node app.js"
