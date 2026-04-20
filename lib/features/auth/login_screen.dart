@@ -142,101 +142,88 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   ElevatedButton(
                     onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          if (isLogin) {
-                            // LOGIN
-                            await FirebaseAuth.instance.signInWithEmailAndPassword(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim(),
-                            );
+                      if (!_formKey.currentState!.validate()) return;
 
-                            if (!context.mounted) return;
-                            final userData = Provider.of<UserData>(context, listen: false);
-                            await userData.fetchProfile();
+                      // Show loading dialog
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const Center(child: CircularProgressIndicator()),
+                      );
 
-                            if (!context.mounted) return;
-                            if (userData.hasSelectedRole) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MainScreen(),
-                                ),
-                              );
-                            } else {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const RoleSelectionScreen(),
-                                ),
-                              );
-                            }
-                          } else {
-                            // REGISTER
-                            String email = emailController.text.trim();
-                            String password = passwordController.text.trim();
+                      try {
+                        if (isLogin) {
+                          // LOGIN
+                          await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
 
-                            if (email.contains(' ')) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Email cannot contain spaces")),
-                              );
-                              return;
-                            }
+                          if (!context.mounted) return;
+                          final userData = Provider.of<UserData>(context, listen: false);
+                          await userData.fetchProfile();
 
-                            if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                                .hasMatch(email)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Please enter a valid email address")),
-                              );
-                              return;
-                            }
+                          if (!context.mounted) return;
+                          Navigator.pop(context); // Close loading dialog
 
-                            if (password.contains(' ')) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Password cannot contain spaces")),
-                              );
-                              return;
-                            }
-
-                            if (!RegExp(r'^(?=.*[A-Z])(?=.*\d).+$').hasMatch(password)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        "Password must contain at least one uppercase letter and one number")),
-                              );
-                              return;
-                            }
-
-                            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-
-                            if (!context.mounted) return;
+                          if (userData.error != null) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Account Created Successfully")),
+                              SnackBar(content: Text("Profile Error: ${userData.error}")),
                             );
+                            return;
+                          }
 
-                            await Future.delayed(const Duration(milliseconds: 500));
-
-                            if (!context.mounted) return;
-                            final userData = Provider.of<UserData>(context, listen: false);
-                            await userData.fetchProfile(); // Creates profile in DB
-
-                            if (!context.mounted) return;
+                          if (userData.hasSelectedRole) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => const RoleSelectionScreen(),
-                              ),
+                              MaterialPageRoute(builder: (context) => const MainScreen()),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
                             );
                           }
-                        } on FirebaseAuthException catch (e) {
+                        } else {
+                          // REGISTER
+                          String email = emailController.text.trim();
+                          String password = passwordController.text.trim();
+
+                          if (email.contains(' ') || password.contains(' ')) {
+                             Navigator.pop(context);
+                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No spaces allowed")));
+                             return;
+                          }
+
+                          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+
                           if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.message ?? "Authentication Failed")),
+                          final userData = Provider.of<UserData>(context, listen: false);
+                          await userData.fetchProfile(); // Creates profile in DB
+
+                          if (!context.mounted) return;
+                          Navigator.pop(context); // Close loading dialog
+                          
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
                           );
                         }
+                      } on FirebaseAuthException catch (e) {
+                        if (!context.mounted) return;
+                        Navigator.pop(context); // Close loading dialog
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.message ?? "Authentication Failed")),
+                        );
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        Navigator.pop(context); // Close loading dialog
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Unexpected error: $e")),
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(

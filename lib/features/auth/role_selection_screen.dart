@@ -65,10 +65,18 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       // 0 = Customer, 1 = Seller
                       String roleStr = selectedRole == 0 ? 'customer' : 'seller';
                       
+                      // Show loading dialog
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const Center(child: CircularProgressIndicator()),
+                      );
+
                       final userData = Provider.of<UserData>(context, listen: false);
                       bool success = await userData.setRole(roleStr);
                       
                       if (!context.mounted) return;
+                      Navigator.pop(context); // Close loading dialog
                       
                       if (success) {
                         Navigator.pushReplacement(
