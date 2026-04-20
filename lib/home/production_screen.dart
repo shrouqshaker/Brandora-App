@@ -71,25 +71,38 @@ void initState() {
     });
   }
 
+  final TextEditingController _costPriceController = TextEditingController();
+  final TextEditingController _profitController = TextEditingController();
+  
+  double _profitPercentage = 0.0;
+
   void _updateFinalPrice() {
     double productQty = double.tryParse(_productQtyController.text) ?? 1.0;
     if (productQty <= 0) productQty = 1.0;
 
-    double marginPercent = double.tryParse(_marginController.text) ?? 0.0;
     double additionalExpenses = double.tryParse(_additionalExpensesController.text) ?? 0.0;
-    double purchasePrice = double.tryParse(_purchasePriceController.text) ?? 0.0;
-
-    double baseCost;
+    
     if (_includesMaterials) {
-      baseCost = _totalMaterialsCost + additionalExpenses;
+      double marginPercent = double.tryParse(_marginController.text) ?? 0.0;
+      double baseCost = _totalMaterialsCost + additionalExpenses;
+      setState(() {
+        double totalFinalPrice = baseCost + (baseCost * (marginPercent / 100));
+        _finalPriceWithMargin = totalFinalPrice / productQty;
+      });
     } else {
-      baseCost = purchasePrice + additionalExpenses;
+      double costPrice = double.tryParse(_costPriceController.text) ?? 0.0;
+      double profit = double.tryParse(_profitController.text) ?? 0.0;
+      
+      setState(() {
+        double totalCost = costPrice + additionalExpenses;
+        if (totalCost > 0) {
+          _profitPercentage = (profit / totalCost) * 100;
+        } else {
+          _profitPercentage = 0.0;
+        }
+        _finalPriceWithMargin = (totalCost + profit) / productQty;
+      });
     }
-
-    setState(() {
-      double totalFinalPrice = baseCost + (baseCost * (marginPercent / 100));
-      _finalPriceWithMargin = totalFinalPrice / productQty;
-    });
   }
 
   @override
@@ -136,8 +149,8 @@ void initState() {
               const SizedBox(height: 25),
         
               if (!_includesMaterials) ...[
-                _buildLabel("PURCHASE PRICE (EGP)"),
-                _buildField("Total batch purchase price", controller: _purchasePriceController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
+                _buildLabel("COST PRICE (EGP)"),
+                _buildField("Total cost price", controller: _costPriceController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
                 const SizedBox(height: 20),
                 _buildManualPricingCard(),
               ],
@@ -236,6 +249,10 @@ void initState() {
                   price: finalPrice,
                   imagePath: _image?.path,
                   usedMaterials: List.from(_addedMaterials),
+                  costPrice: _costPriceController.text,
+                  additionalExpenses: _additionalExpensesController.text,
+                  profit: _profitController.text,
+                  profitPercentage: _profitPercentage.toString(),
                 ));
 
                 // 6. Deduct materials from server if applicable
@@ -337,11 +354,13 @@ void initState() {
     _manualPriceController.clear();
     _marginController.clear();
     _additionalExpensesController.clear();
-    _purchasePriceController.clear();
+    _costPriceController.clear();
+    _profitController.clear();
     setState(() { 
       _addedMaterials.clear(); 
       _totalMaterialsCost = 0.0; 
       _finalPriceWithMargin = 0.0; 
+      _profitPercentage = 0.0;
       _image = null; 
       _errorMessage = null; 
     });
@@ -388,8 +407,10 @@ void initState() {
           _buildLabel("ADDITIONAL EXPENSES (EGP)"),
           _buildPricingField(_additionalExpensesController),
           const SizedBox(height: 15),
-          _buildLabel("PROFIT MARGIN (%)"),
-          _buildPricingField(_marginController),
+          _buildLabel("PROFIT (EGP)"),
+          _buildPricingField(_profitController),
+          const SizedBox(height: 10),
+          Text("Calculated Margin: ${_profitPercentage.toStringAsFixed(1)}%", style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'data.dart';
 import 'inventory_screen.dart';
 import 'production_screen.dart';
 import 'store_screen.dart';
@@ -13,20 +15,27 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 2;
-
-  final List<Widget> _pages = [
-    const StoreScreen(),      // Index 0: MARKET
-    const OrdersScreen(),     // Index 1: ORDERS
-    const InventoryScreen(),  // Index 2: INVENTORY
-    const ProductionScreen(), // Index 3: PRODUCTION
-    const AccountScreen(),    // Index 4: ACCOUNT
-  ];
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<UserData>(context);
+    final isSeller = userData.role == 'seller';
+
+    final List<Widget> pages = isSeller ? [
+      const StoreScreen(),
+      const OrdersScreen(),
+      const InventoryScreen(),
+      const ProductionScreen(),
+      const AccountScreen(),
+    ] : [
+      const StoreScreen(),
+      const OrdersScreen(),
+      const AccountScreen(),
+    ];
+
     return Scaffold(
-      body: SafeArea(child: _pages[_selectedIndex]),
+      body: SafeArea(child: pages[_selectedIndex]),
       bottomNavigationBar: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -36,12 +45,16 @@ class _MainScreenState extends State<MainScreen> {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
+            children: isSeller ? [
               _navItem(Icons.store_outlined, "MARKET", 0),
               _navItem(Icons.list_alt_rounded, "ORDERS", 1),
               _navItem(Icons.inventory_2, "INVENTORY", 2),
               _navItem(Icons.precision_manufacturing_outlined, "PRODUCTION", 3),
               _navItem(Icons.person_outline, "ACCOUNT", 4),
+            ] : [
+              _navItem(Icons.store_outlined, "MARKET", 0),
+              _navItem(Icons.list_alt_rounded, "ORDERS", 1),
+              _navItem(Icons.person_outline, "ACCOUNT", 2),
             ],
           ),
         ),

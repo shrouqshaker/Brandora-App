@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 // ─── POST create a product (multipart/form-data with optional image) ─────────
 router.post('/', upload.single('image'), async (req, res) => {
     try {
-        const { name, quantity, price, includesMaterials, usedMaterials } = req.body;
+        const { name, quantity, price, includesMaterials, usedMaterials, costPrice, additionalExpenses, profit, profitPercentage } = req.body;
 
         // Validation
         if (!name || name.trim() === '')
@@ -74,6 +74,10 @@ router.post('/', upload.single('image'), async (req, res) => {
             includesMaterials: includesMaterials === 'true' || includesMaterials === true,
             usedMaterials: parsedMaterials,
             ownerId: req.user.uid,
+            costPrice: costPrice ? Number(costPrice) : 0,
+            additionalExpenses: additionalExpenses ? Number(additionalExpenses) : 0,
+            profit: profit ? Number(profit) : 0,
+            profitPercentage: profitPercentage ? Number(profitPercentage) : 0,
         });
 
         const saved = await newProduct.save();

@@ -25,30 +25,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget build(BuildContext context) {
     final orderData = Provider.of<OrderData>(context);
     
-    // Dummy data if server list is empty (as requested)
-    final List<dynamic> orders = orderData.orders.isEmpty ? [
-      {
-        "_id": "ORD12345",
-        "customerName": "Ahmed Ali",
-        "status": "Pending",
-        "createdAt": DateTime.now().subtract(const Duration(days: 1)).toString(),
-        "totalPrice": 1200.0
-      },
-      {
-        "_id": "ORD12346",
-        "customerName": "Sara Mohamed",
-        "status": "Processing",
-        "createdAt": DateTime.now().subtract(const Duration(days: 2)).toString(),
-        "totalPrice": 850.0
-      },
-      {
-        "_id": "ORD12347",
-        "customerName": "John Doe",
-        "status": "Delivered",
-        "createdAt": DateTime.now().subtract(const Duration(days: 5)).toString(),
-        "totalPrice": 2100.0
-      }
-    ] : orderData.orders;
+    final List<dynamic> orders = orderData.orders;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FD),
@@ -67,8 +44,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
         ],
       ),
-      body: orders.isEmpty 
-          ? const Center(child: Text("No orders found."))
+      body: orderData.isLoading 
+          ? const Center(child: CircularProgressIndicator())
+          : orders.isEmpty 
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.receipt_long_outlined, size: 80, color: Colors.grey.withValues(alpha: 0.5)),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "No orders yet.",
+                        style: TextStyle(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: orders.length,

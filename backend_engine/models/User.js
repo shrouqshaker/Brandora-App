@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['customer', 'seller'], default: 'customer' },
     hasSelectedRole: { type: Boolean, default: false },
     name: { type: String },
-    phone: { type: String },
     createdAt: { type: Date, default: Date.now },
 });
 

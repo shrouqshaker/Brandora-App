@@ -41,5 +41,21 @@ router.post('/role', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+// Get seller analytics
+router.get('/analytics', async (req, res) => {
+    try {
+        const Product = require('../models/Product');
+        const Order = require('../models/Order');
+
+        const totalProducts = await Product.countDocuments({ ownerId: req.user.uid });
+        const orders = await Order.find({ sellerId: req.user.uid });
+        const totalOrders = orders.length;
+        const totalRevenue = orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
+
+        res.json({ totalProducts, totalOrders, totalRevenue });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;

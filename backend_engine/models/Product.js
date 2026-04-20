@@ -8,6 +8,10 @@ const productSchema = new mongoose.Schema({
     includesMaterials: { type: Boolean, default: true },
     usedMaterials: [{ type: String }],    // stored as MaterialName  qty strings
     ownerId: { type: String, required: true },   // Firebase UID
+    costPrice: { type: Number, default: 0 },
+    additionalExpenses: { type: Number, default: 0 },
+    profit: { type: Number, default: 0 },
+    profitPercentage: { type: Number, default: 0 },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

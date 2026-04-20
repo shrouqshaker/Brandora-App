@@ -49,6 +49,10 @@ class ProductModel {
   String price;
   String? imagePath;
   List<String> usedMaterials;
+  String? costPrice;
+  String? additionalExpenses;
+  String? profit;
+  String? profitPercentage;
 
   ProductModel({
     this.id,
@@ -57,6 +61,10 @@ class ProductModel {
     required this.price,
     this.imagePath,
     this.usedMaterials = const [],
+    this.costPrice,
+    this.additionalExpenses,
+    this.profit,
+    this.profitPercentage,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -248,6 +256,11 @@ class ProductsData extends ChangeNotifier {
         'usedMaterials':    jsonEncode(product.usedMaterials),
       };
 
+      if (product.costPrice != null && product.costPrice!.isNotEmpty) fields['costPrice'] = product.costPrice!;
+      if (product.additionalExpenses != null && product.additionalExpenses!.isNotEmpty) fields['additionalExpenses'] = product.additionalExpenses!;
+      if (product.profit != null && product.profit!.isNotEmpty) fields['profit'] = product.profit!;
+      if (product.profitPercentage != null && product.profitPercentage!.isNotEmpty) fields['profitPercentage'] = product.profitPercentage!;
+
       File? imageFile;
       if (product.imagePath != null) {
         imageFile = File(product.imagePath!);
@@ -320,6 +333,9 @@ class UserData extends ChangeNotifier {
   String get role => _userProfile?['role'] ?? 'customer';
   bool get hasSelectedRole => _userProfile?['hasSelectedRole'] ?? false;
 
+  Map<String, dynamic>? _analytics;
+  Map<String, dynamic>? get analytics => _analytics;
+
   Future<void> fetchProfile() async {
     _isLoading = true;
     _error = null;
@@ -329,6 +345,9 @@ class UserData extends ChangeNotifier {
       final response = await ApiService.get('/users/profile');
       if (response.statusCode == 200) {
         _userProfile = jsonDecode(response.body);
+        if (_userProfile?['role'] == 'seller') {
+          fetchAnalytics();
+        }
       } else {
         _error = ApiService.parseError(response);
       }
@@ -337,6 +356,18 @@ class UserData extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchAnalytics() async {
+    try {
+      final response = await ApiService.get('/users/analytics');
+      if (response.statusCode == 200) {
+        _analytics = jsonDecode(response.body);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('fetchAnalytics error: $e');
     }
   }
 
@@ -396,13 +427,12 @@ class OrderData extends ChangeNotifier {
     }
   }
 
-  Future<bool> placeOrder(String productId, int quantity, String name, String phone) async {
+  Future<bool> placeOrder(String productId, int quantity, String name) async {
     try {
       final response = await ApiService.post('/orders', {
         'productId': productId,
         'quantity': quantity,
         'customerName': name,
-        'customerPhone': phone,
       });
       return response.statusCode == 201;
     } catch (e) {

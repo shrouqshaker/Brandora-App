@@ -95,7 +95,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                           product.id!,
                                           1, // Default quantity
                                           userData.userProfile?['name'] ?? "Customer",
-                                          userData.userProfile?['phone'] ?? "",
                                         );
                                         if (!context.mounted) return;
                                         ScaffoldMessenger.of(context).showSnackBar(
