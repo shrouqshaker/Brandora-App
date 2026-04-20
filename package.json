@@ -2,7 +2,6 @@
   "name": "brandora-proxy",
   "version": "1.0.0",
   "scripts": {
-    "start": "node backend_engine/app.js",
-    "build": "cd backend_engine && npm install"
+    "start": "node backend_engine/app.js"
   }
 }
