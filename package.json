@@ -1,12 +1,21 @@
 {
-  "name": "brandora-root",
+  "name": "brandora-backend",
   "version": "1.0.0",
-  "description": "Brandora App - Root (Backend in backend_engine/)",
+  "description": "Brandora Backend",
+  "main": "backend_engine/app.js",
   "scripts": {
     "start": "node backend_engine/app.js",
     "build": "npm install --prefix backend_engine"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.7.0",
+    "mongoose": "^9.3.3",
+    "multer": "^2.1.1"
   }
 }
