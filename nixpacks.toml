@@ -5,7 +5,7 @@ node = true
 nixPkgs = ["nodejs", "npm"]
 
 [phases.install]
-cmds = ["npm install --prefix backend_engine"]
+cmds = ["cd backend_engine && npm install"]
 
 [start]
 cmd = "cd backend_engine && node app.js"
