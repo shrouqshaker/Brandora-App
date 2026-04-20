@@ -87,7 +87,8 @@ void initState() {
     }
 
     setState(() {
-      _finalPriceWithMargin = baseCost + (baseCost * (marginPercent / 100));
+      double totalFinalPrice = baseCost + (baseCost * (marginPercent / 100));
+      _finalPriceWithMargin = totalFinalPrice / productQty;
     });
   }
 
