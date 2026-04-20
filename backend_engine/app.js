@@ -32,10 +32,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ─── MongoDB ─────────────────────────────────────────────────────────────────
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://localhost:27017/brandora_db';
 mongoose.connect(mongoURI)
-    .then(() => console.log(' Connected to MongoDB'))
+    .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => {
-        console.error('MongoDB Connection Error:', err.message);
-        process.exit(1);
+        console.error('❌ MongoDB Connection Error:', err.message);
+        console.error('Check MONGO_URL in Railway Variables.');
     });
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
