@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:winterproject/features/auth/role_selection_screen.dart';
+import 'package:winterproject/home/main_screen.dart';
+import 'package:winterproject/home/data.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -234,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             SnackBar(content: Text(e.message ?? "Authentication Failed")),
                           );
                         }
-                      } }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
