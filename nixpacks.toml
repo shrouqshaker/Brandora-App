@@ -8,4 +8,4 @@ nixPkgs = ["nodejs", "npm"]
 cmds = ["cd backend_engine && npm install"]
 
 [start]
-cmd = "cd backend_engine && node app.js"
+cmd = "node app.js"
