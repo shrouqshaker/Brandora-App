@@ -46,7 +46,7 @@ app.use('/api/orders', orderRoutes);
 
 app.get('/api/test', (req, res) => res.json({ message: 'API is working!' }));
 
-app.get('/', (req, res) => res.json({ status: 'Brandora Backend is UPDATED ' }));
+app.get('/', (req, res) => res.json({ status: 'Brandora Backend v2.0 - LIVE', routes: ['/api/users/profile', '/api/users/role', '/api/materials', '/api/products', '/api/orders'] }));
 
 // ─── Global Error Handler ────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
