@@ -1,0 +1,12 @@
+{
+  "name": "brandora-root",
+  "version": "1.0.0",
+  "description": "Brandora App - Root (Backend in backend_engine/)",
+  "scripts": {
+    "start": "node backend_engine/app.js",
+    "build": "npm install --prefix backend_engine"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
