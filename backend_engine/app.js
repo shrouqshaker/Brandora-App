@@ -43,6 +43,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 
+app.get('/api/test', (req, res) => res.json({ message: 'API is working!' }));
+
 app.get('/', (req, res) => res.json({ status: 'Brandora Backend is Running ' }));
 
 // ─── Global Error Handler ────────────────────────────────────────────────────
