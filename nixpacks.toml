@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ['nodejs']
-
-[phases.install]
-cmds = ['cd backend_engine && npm install']
-
-[start]
-cmd = 'cd backend_engine && node app.js'
