@@ -64,10 +64,9 @@ void initState() {
                     ? materialsData.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : _buildMaterialsList(materials, materialsData)
-                    : _buildEmptyState(
-                        selectedTab == 0 ? "Overview" : "Analytics",
-                        "Information will appear here soon.",
-                      ),
+                    : selectedTab == 0
+                        ? _buildOverview(materials)
+                        : _buildAnalytics(),
               ),
             ],
           ),
@@ -178,11 +177,7 @@ void initState() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey,
-          child: Icon(Icons.person, color: Colors.white, size: 20),
-        ),
+        const SizedBox(width: 40), // Placeholder to keep title centered
         Text(
           "Brandora",
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryColor),
@@ -262,15 +257,73 @@ void initState() {
     );
   }
 
-  Widget _buildEmptyState(String title, String sub) {
+  Widget _buildOverview(List<MaterialModel> materials) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          _buildInfoCard("Total Materials", "15", Icons.inventory_2, Colors.blue),
+          _buildInfoCard("Low Stock", "3", Icons.warning_amber_rounded, Colors.orange),
+          _buildInfoCard("Stock Value", "12,500 EGP", Icons.account_balance_wallet_outlined, Colors.green),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(15)),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+              Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF1E232C))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalytics() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.insert_chart_outlined, size: 50, color: Colors.grey.shade300),
-          const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          Text(sub, style: const TextStyle(color: Colors.grey)),
+          const Text(
+            "Material Usage",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E232C)),
+          ),
+          const SizedBox(height: 30),
+          SizedBox(
+            width: 150,
+            height: 150,
+            child: CircularProgressIndicator(
+              value: 0.65,
+              strokeWidth: 12,
+              backgroundColor: Colors.grey.shade200,
+              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+            ),
+          ),
+          const SizedBox(height: 30),
+          const Text("65% Capacity Used", style: TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),
     );

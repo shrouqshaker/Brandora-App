@@ -102,7 +102,7 @@ void initState() {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Icon(Icons.menu, color: primaryColor),
+
         title: Text("Production", style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
@@ -357,11 +357,11 @@ void initState() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildLabel("PROFIT MARGIN (%)"),
-          _buildPricingField(_marginController),
-          const SizedBox(height: 15),
           _buildLabel("ADDITIONAL EXPENSES (EGP)"),
           _buildPricingField(_additionalExpensesController),
+          const SizedBox(height: 15),
+          _buildLabel("PROFIT MARGIN (%)"),
+          _buildPricingField(_marginController),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
@@ -384,11 +384,11 @@ void initState() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildLabel("PROFIT MARGIN (%)"),
-          _buildPricingField(_marginController),
-          const SizedBox(height: 15),
           _buildLabel("ADDITIONAL EXPENSES (EGP)"),
           _buildPricingField(_additionalExpensesController),
+          const SizedBox(height: 15),
+          _buildLabel("PROFIT MARGIN (%)"),
+          _buildPricingField(_marginController),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),

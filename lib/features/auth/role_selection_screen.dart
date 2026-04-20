@@ -17,91 +17,90 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FD),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Choose how you\nwant to use the\nplatform.",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w900, // Extra Bold
-                  color: Color(0xFF1A237E),
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "Select the role that best matches your journey with us.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-              const SizedBox(height: 40),
-
-              _buildRoleCard(
-                index: 0,
-                title: "Customer",
-                subtitle: "Browse products and make purchases with ease.",
-                icon: Icons.shopping_bag_outlined,
-              ),
-              const SizedBox(height: 16),
-              _buildRoleCard(
-                index: 1,
-                title: "Seller",
-                subtitle:
-                    "List your products and manage your shop professionally.",
-                icon: Icons.storefront_outlined,
-              ),
-              const SizedBox(height: 16),
-              _buildRoleCard(
-                index: 2,
-                title: "Both",
-                subtitle:
-                    "Buy and sell seamlessly with a single unified account.",
-                icon: Icons.swap_horiz_outlined,
-              ),
-
-              const Spacer(),
-
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 0 = Customer, 1 = Seller, 2 = Both
-                    if (selectedRole == 1 || selectedRole == 2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MainScreen(),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Redirecting to Market..."),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    "Continue",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Choose how you\nwant to use the\nplatform.",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w900, // Extra Bold
+                    color: Color(0xFF1A237E),
+                    height: 1.2,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                const Text(
+                  "Select the role that best matches your journey with us.",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                const SizedBox(height: 40),
+
+                _buildRoleCard(
+                  index: 0,
+                  title: "Customer",
+                  subtitle: "Browse products and make purchases with ease.",
+                  icon: Icons.shopping_bag_outlined,
+                ),
+                const SizedBox(height: 16),
+                _buildRoleCard(
+                  index: 1,
+                  title: "Seller",
+                  subtitle:
+                      "List your products and manage your shop professionally.",
+                  icon: Icons.storefront_outlined,
+                ),
+                
+                const SizedBox(height: 40),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // 0 = Customer, 1 = Seller
+                      String roleStr = selectedRole == 0 ? 'customer' : 'seller';
+                      
+                      final userData = Provider.of<UserData>(context, listen: false);
+                      bool success = await userData.setRole(roleStr);
+                      
+                      if (!context.mounted) return;
+                      
+                      if (success) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainScreen(),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(userData.error ?? "Failed to set role")),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      "Continue",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

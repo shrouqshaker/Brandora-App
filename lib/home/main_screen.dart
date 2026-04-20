@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'inventory_screen.dart';
 import 'production_screen.dart';
 import 'store_screen.dart';
+import 'orders_screen.dart';
+import 'account_screen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -13,11 +16,11 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 2;
 
   final List<Widget> _pages = [
-    const StoreScreen(),                           // Index 0
-    const Center(child: Text("Dashboard Page")),  // Index 1
-    const InventoryScreen(),                      // Index 2
-    const ProductionScreen(),
-    const Center(child: Text("Account Page")),    // Index 4
+    const StoreScreen(),      // Index 0: MARKET
+    const OrdersScreen(),     // Index 1: ORDERS
+    const InventoryScreen(),  // Index 2: INVENTORY
+    const ProductionScreen(), // Index 3: PRODUCTION
+    const AccountScreen(),    // Index 4: ACCOUNT
   ];
 
   @override
@@ -35,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _navItem(Icons.store_outlined, "MARKET", 0),
-              _navItem(Icons.grid_view_rounded, "DASHBOARD", 1),
+              _navItem(Icons.list_alt_rounded, "ORDERS", 1),
               _navItem(Icons.inventory_2, "INVENTORY", 2),
               _navItem(Icons.precision_manufacturing_outlined, "PRODUCTION", 3),
               _navItem(Icons.person_outline, "ACCOUNT", 4),

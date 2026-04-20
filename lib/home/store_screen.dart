@@ -45,6 +45,9 @@ class _StoreScreenState extends State<StoreScreen> {
               itemCount: productsData.products.length,
               itemBuilder: (context, index) {
                 final product = productsData.products[index];
+                final userData = Provider.of<UserData>(context);
+                final orderData = Provider.of<OrderData>(context, listen: false);
+
                 return Center(
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.75,
@@ -75,14 +78,40 @@ class _StoreScreenState extends State<StoreScreen> {
                           child: Column(
                             children: [
                               Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("${product.price} EGP", style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
-                                    onPressed: () => productsData.removeProduct(product.id!),
-                                  )
+                                  if (userData.role == 'seller')
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
+                                      onPressed: () => productsData.removeProduct(product.id!),
+                                    )
+                                  else
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        bool success = await orderData.placeOrder(
+                                          product.id!,
+                                          1, // Default quantity
+                                          userData.userProfile?['name'] ?? "Customer",
+                                          userData.userProfile?['phone'] ?? "",
+                                        );
+                                        if (!context.mounted) return;
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(success ? "Order Placed!" : "Failed to place order"),
+                                            backgroundColor: success ? Colors.green : Colors.red,
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                                      ),
+                                      child: const Text("Order", style: TextStyle(color: Colors.white, fontSize: 12)),
+                                    ),
                                 ],
                               )
                             ],

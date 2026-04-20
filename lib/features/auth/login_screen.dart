@@ -142,29 +142,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           if (isLogin) {
-                            // � LOGIN
+                            // LOGIN
                             await FirebaseAuth.instance.signInWithEmailAndPassword(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
                             );
 
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Login Successful")),
-                            );
-
-                            await Future.delayed(const Duration(milliseconds: 500));
+                            final userData = Provider.of<UserData>(context, listen: false);
+                            await userData.fetchProfile();
 
                             if (!context.mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RoleSelectionScreen(),
-                              ),
-                            );
-
+                            if (userData.hasSelectedRole) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MainScreen(),
+                                ),
+                              );
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RoleSelectionScreen(),
+                                ),
+                              );
+                            }
                           } else {
-                            // � REGISTER
+                            // REGISTER
                             String email = emailController.text.trim();
                             String password = passwordController.text.trim();
 
@@ -212,6 +217,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             await Future.delayed(const Duration(milliseconds: 500));
 
                             if (!context.mounted) return;
+                            final userData = Provider.of<UserData>(context, listen: false);
+                            await userData.fetchProfile(); // Creates profile in DB
+
+                            if (!context.mounted) return;
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -225,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             SnackBar(content: Text(e.message ?? "Authentication Failed")),
                           );
                         }
-                      }
+                      } }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,

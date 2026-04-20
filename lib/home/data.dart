@@ -304,3 +304,109 @@ class ProductsData extends ChangeNotifier {
     }
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 5. PROVIDER — User Data
+// ═══════════════════════════════════════════════════════════════════════════════
+class UserData extends ChangeNotifier {
+  Map<String, dynamic>? _userProfile;
+  bool _isLoading = false;
+  String? _error;
+
+  Map<String, dynamic>? get userProfile => _userProfile;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  String get role => _userProfile?['role'] ?? 'customer';
+  bool get hasSelectedRole => _userProfile?['hasSelectedRole'] ?? false;
+
+  Future<void> fetchProfile() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await ApiService.get('/users/profile');
+      if (response.statusCode == 200) {
+        _userProfile = jsonDecode(response.body);
+      } else {
+        _error = ApiService.parseError(response);
+      }
+    } catch (e) {
+      _error = 'Connection error: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> setRole(String role) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await ApiService.post('/users/role', {'role': role});
+      if (response.statusCode == 200) {
+        _userProfile = jsonDecode(response.body);
+        return true;
+      } else {
+        _error = ApiService.parseError(response);
+        return false;
+      }
+    } catch (e) {
+      _error = 'Connection error: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 6. PROVIDER — Orders Data
+// ═══════════════════════════════════════════════════════════════════════════════
+class OrderData extends ChangeNotifier {
+  List<dynamic> _orders = [];
+  bool _isLoading = false;
+  String? _error;
+
+  List<dynamic> get orders => _orders;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchOrders(String role) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await ApiService.get('/orders?role=$role');
+      if (response.statusCode == 200) {
+        _orders = jsonDecode(response.body);
+      } else {
+        _error = ApiService.parseError(response);
+      }
+    } catch (e) {
+      _error = 'Connection error: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> placeOrder(String productId, int quantity, String name, String phone) async {
+    try {
+      final response = await ApiService.post('/orders', {
+        'productId': productId,
+        'quantity': quantity,
+        'customerName': name,
+        'customerPhone': phone,
+      });
+      return response.statusCode == 201;
+    } catch (e) {
+      return false;
+    }
+  }
+}

@@ -29,10 +29,18 @@ const upload = multer({
     },
 });
 
-// ─── GET all products for the authenticated user ─────────────────────────────
+// ─── GET products (Customer sees ALL, Seller sees OWN) ────────────────────────
 router.get('/', async (req, res) => {
     try {
-        const products = await Product.find({ ownerId: req.user.uid }).sort({ createdAt: -1 });
+        const { role } = req.query; // Expect role to be passed from frontend
+        
+        let query = {};
+        if (role === 'seller') {
+            query = { ownerId: req.user.uid };
+        }
+        // if role is customer or not provided, show all products
+
+        const products = await Product.find(query).sort({ createdAt: -1 });
         res.json(products);
     } catch (err) {
         res.status(500).json({ message: 'Failed to fetch products: ' + err.message });
