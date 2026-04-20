@@ -11,7 +11,7 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userData = Provider.of<UserData>(context);
     final profile = userData.userProfile;
-    final Color primaryColor = const Color(0xFF3F51B5);
+    const Color primaryColor = Color(0xFF3F51B5);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FD),
