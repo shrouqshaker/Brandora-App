@@ -167,9 +167,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pop(context); // Close loading dialog
 
                           if (userData.error != null) {
+                            // Show error but still try to navigate based on best guess
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Profile Error: ${userData.error}")),
+                              SnackBar(
+                                content: Text("Server error: ${userData.error}. Please try again."),
+                                backgroundColor: Colors.red[700],
+                                duration: const Duration(seconds: 4),
+                              ),
                             );
+                            // Sign out so user can try again cleanly
+                            await FirebaseAuth.instance.signOut();
                             return;
                           }
 
@@ -206,7 +213,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           if (!context.mounted) return;
                           Navigator.pop(context); // Close loading dialog
+
+                          if (userData.error != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Account created but profile sync failed: ${userData.error}"),
+                                backgroundColor: Colors.orange[700],
+                                duration: const Duration(seconds: 4),
+                              ),
+                            );
+                          }
                           
+                          // Always navigate to role selection after registration
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
