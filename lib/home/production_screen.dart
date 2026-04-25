@@ -275,7 +275,7 @@ void initState() {
               },
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          disabledBackgroundColor: primaryColor.withOpacity(0.5),
+          disabledBackgroundColor: primaryColor.withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
         child: _isSubmitting
@@ -309,9 +309,9 @@ void initState() {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.05),
+                color: Colors.red.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withOpacity(0.1)),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.1)),
               ),
               child: Row(
                 children: [
@@ -360,7 +360,7 @@ void initState() {
       decoration: BoxDecoration(
         color: const Color(0xFFF5F7FF),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: primaryColor.withOpacity(0.1)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,7 +582,7 @@ void initState() {
         Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Icon(Icons.layers_outlined, color: primaryColor)),
         const SizedBox(width: 12),
         const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text("Includes Materials", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)), Text("Track raw material usage", style: TextStyle(color: Colors.grey, fontSize: 11))])),
-        Switch(value: _includesMaterials, onChanged: (val) => setState(() => _includesMaterials = val), activeTrackColor: primaryColor.withOpacity(0.5), activeThumbColor: primaryColor),
+        Switch(value: _includesMaterials, onChanged: (val) => setState(() => _includesMaterials = val), activeTrackColor: primaryColor.withValues(alpha: 0.5), activeThumbColor: primaryColor),
       ]),
     );
   }
