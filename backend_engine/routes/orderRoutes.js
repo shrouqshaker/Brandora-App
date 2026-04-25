@@ -72,4 +72,19 @@ router.put('/:id/status', async (req, res) => {
     }
 });
 
+// Delete an order (Allow customer to cancel/remove if Pending)
+router.delete('/:id', async (req, res) => {
+    try {
+        const order = await Order.findOneAndDelete({
+            _id: req.params.id,
+            $or: [{ customerId: req.user.uid }, { sellerId: req.user.uid }]
+        });
+
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+        res.json({ message: 'Order removed successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;

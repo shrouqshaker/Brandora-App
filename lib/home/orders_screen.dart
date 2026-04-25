@@ -132,6 +132,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               ),
                             ),
                           ),
+                          if (Provider.of<UserData>(context, listen: false).role != 'seller' && order['status'] == 'Pending')
+                            IconButton(
+                              icon: const Icon(Icons.cancel_outlined, color: Colors.redAccent, size: 20),
+                              onPressed: () async {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Cancel Order"),
+                                    content: const Text("Are you sure you want to cancel and remove this order?"),
+                                    actions: [
+                                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
+                                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Yes", style: TextStyle(color: Colors.red))),
+                                    ],
+                                  ),
+                                );
+                                if (confirmed == true) {
+                                  if (!context.mounted) return;
+                                  final success = await Provider.of<OrderData>(context, listen: false).cancelOrder(order['_id']);
+                                  if (success && context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Order cancelled successfully")));
+                                  }
+                                }
+                              },
+                            ),
                         ],
                       ),
                     ],

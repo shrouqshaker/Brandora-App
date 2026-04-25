@@ -20,6 +20,7 @@ void initState() {
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     Provider.of<MaterialsData>(context, listen: false).fetchMaterials();
+    Provider.of<UserData>(context, listen: false).fetchAnalytics();
   });
 }
 
@@ -157,7 +158,12 @@ void initState() {
                     ),
                     const SizedBox(height: 5),
                     GestureDetector(
-                      onTap: () => materialsData.removeMaterial(index),
+                      onTap: () async {
+                        final success = await materialsData.removeMaterial(index);
+                        if (success && context.mounted) {
+                          Provider.of<UserData>(context, listen: false).fetchAnalytics();
+                        }
+                      },
                       child: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                     ),
                   ],
@@ -181,8 +187,10 @@ void initState() {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryColor),
         ),
         IconButton(
-          onPressed: () =>
-              Provider.of<MaterialsData>(context, listen: false).fetchMaterials(),
+          onPressed: () {
+              Provider.of<MaterialsData>(context, listen: false).fetchMaterials();
+              Provider.of<UserData>(context, listen: false).fetchAnalytics();
+          },
           icon: Icon(Icons.refresh, color: primaryColor),
         ),
       ],
@@ -236,11 +244,14 @@ void initState() {
       width: 210,
       margin: const EdgeInsets.only(bottom: 10),
       child: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddMaterialScreen()),
           );
+          if (mounted) {
+            Provider.of<UserData>(context, listen: false).fetchAnalytics();
+          }
         },
         backgroundColor: primaryColor,
         elevation: 4,
@@ -301,23 +312,6 @@ void initState() {
           _buildInfoCard("Total Revenue", "${analytics?['totalRevenue']?.toString() ?? "0"} EGP", Icons.account_balance_wallet_outlined, Colors.green),
           _buildInfoCard("Low Stock Materials", analytics?['lowStockCount']?.toString() ?? "0", Icons.warning_amber_rounded, Colors.red),
           const SizedBox(height: 20),
-          const Text(
-            "Material Usage",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E232C)),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 150,
-            height: 150,
-            child: CircularProgressIndicator(
-              value: 0.65,
-              strokeWidth: 12,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text("65% Capacity Used", style: TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),
     );

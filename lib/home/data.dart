@@ -480,4 +480,19 @@ class OrderData extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> cancelOrder(String orderId) async {
+    try {
+      final response = await ApiService.delete('/orders/$orderId');
+      if (response.statusCode == 200) {
+        _orders.removeWhere((o) => o['_id'] == orderId);
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('cancelOrder error: $e');
+      return false;
+    }
+  }
 }
