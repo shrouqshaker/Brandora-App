@@ -37,7 +37,7 @@ class AccountScreen extends StatelessWidget {
                     BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 20, offset: const Offset(0, 10)),
                   ],
                 ),
-                child: Center(
+                child: const Center(
                   child: Icon(Icons.person_rounded, size: 60, color: primaryColor),
                 ),
               ),
@@ -59,19 +59,6 @@ class AccountScreen extends StatelessWidget {
               
               if (userData.role == 'seller') ...[
                 const SizedBox(height: 30),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Seller Analytics", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatCard("Total Products", userData.analytics?['totalProducts']?.toString() ?? "0", Icons.inventory_2_outlined),
-                    _buildStatCard("Total Orders", userData.analytics?['totalOrders']?.toString() ?? "0", Icons.list_alt_rounded),
-                    _buildStatCard("Revenue (EGP)", userData.analytics?['totalRevenue']?.toString() ?? "0", Icons.attach_money),
-                  ],
-                ),
               ],
               
               const SizedBox(height: 60),
@@ -123,29 +110,6 @@ class AccountScreen extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String label, String value, IconData icon) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: const Color(0xFF3F51B5), size: 24),
-            const SizedBox(height: 8),
-            Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 4),
-            Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey, fontSize: 10)),
-          ],
-        ),
       ),
     );
   }

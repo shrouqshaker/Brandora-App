@@ -43,11 +43,13 @@ const materialRoutes = require('./routes/materialRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 app.use('/api/materials', materialRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/api/test', (req, res) => res.json({ message: 'API is working!' }));
 

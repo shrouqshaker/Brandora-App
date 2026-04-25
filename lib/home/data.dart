@@ -75,6 +75,10 @@ class ProductModel {
       price:        (json['price']    ?? 0).toString(),
       imagePath:    json['imagePath'],
       usedMaterials: List<String>.from(json['usedMaterials'] ?? []),
+      costPrice:    (json['costPrice'] ?? 0).toString(),
+      additionalExpenses: (json['additionalExpenses'] ?? 0).toString(),
+      profit:       (json['profit'] ?? 0).toString(),
+      profitPercentage: (json['profitPercentage'] ?? 0).toString(),
     );
   }
 }
@@ -223,13 +227,16 @@ class ProductsData extends ChangeNotifier {
   String?            get error     => _error;
 
   // ── Fetch all products from server ───────────────────────────────────────────
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts({String? role}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final response = await ApiService.get('/products');
+      String endpoint = '/products';
+      if (role != null) endpoint += '?role=$role';
+      
+      final response = await ApiService.get(endpoint);
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         _products = data.map((item) => ProductModel.fromJson(item)).toList();
@@ -246,7 +253,7 @@ class ProductsData extends ChangeNotifier {
   }
 
   // ── Add a product (with optional image upload as multipart) ─────────────────
-  Future<bool> addProduct(ProductModel product) async {
+  Future<bool> addProduct(ProductModel product, {Function(int)? onTotalProductsUpdate}) async {
     try {
       final fields = {
         'name':             product.name,
@@ -274,7 +281,15 @@ class ProductsData extends ChangeNotifier {
       );
 
       if (streamedResponse.statusCode == 201) {
-        await fetchProducts();
+        final responseBody = await streamedResponse.stream.bytesToString();
+        final body = jsonDecode(responseBody);
+        
+        // Return updated total products for real-time fix
+        if (onTotalProductsUpdate != null && body['totalProducts'] != null) {
+          onTotalProductsUpdate(body['totalProducts']);
+        }
+
+        await fetchProducts(role: 'seller'); // Refresh with seller filter
         return true;
       } else {
         // Parse error from streamed response
@@ -361,13 +376,20 @@ class UserData extends ChangeNotifier {
 
   Future<void> fetchAnalytics() async {
     try {
-      final response = await ApiService.get('/users/analytics');
+      final response = await ApiService.get('/analytics/seller');
       if (response.statusCode == 200) {
         _analytics = jsonDecode(response.body);
         notifyListeners();
       }
     } catch (e) {
       debugPrint('fetchAnalytics error: $e');
+    }
+  }
+
+  void updateAnalyticsDirectly(int totalProducts) {
+    if (_analytics != null) {
+      _analytics!['totalProducts'] = totalProducts;
+      notifyListeners();
     }
   }
 
@@ -436,6 +458,25 @@ class OrderData extends ChangeNotifier {
       });
       return response.statusCode == 201;
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateOrderStatus(String orderId, String status) async {
+    try {
+      final response = await ApiService.put('/orders/$orderId/status', {'status': status});
+      if (response.statusCode == 200) {
+        final updatedOrder = jsonDecode(response.body);
+        final index = _orders.indexWhere((o) => o['_id'] == orderId);
+        if (index != -1) {
+          _orders[index] = updatedOrder;
+          notifyListeners();
+        }
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('updateOrderStatus error: $e');
       return false;
     }
   }

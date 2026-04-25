@@ -11,7 +11,7 @@ class InventoryScreen extends StatefulWidget {
 }
 
 class _InventoryScreenState extends State<InventoryScreen> {
-  int selectedTab = 1;
+  int selectedTab = 1; // Default to Materials
   final Color primaryColor = const Color(0xFF3F51B5);
 
  @override
@@ -64,9 +64,7 @@ void initState() {
                     ? materialsData.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : _buildMaterialsList(materials, materialsData)
-                    : selectedTab == 0
-                        ? _buildOverview(materials)
-                        : _buildAnalytics(),
+                    : _buildAnalytics(),
               ),
             ],
           ),
@@ -200,7 +198,6 @@ void initState() {
       ),
       child: Row(
         children: [
-          _tabItem("Overview", 0),
           _tabItem("Materials", 1),
           _tabItem("Analytics", 2),
         ],
@@ -257,18 +254,7 @@ void initState() {
     );
   }
 
-  Widget _buildOverview(List<MaterialModel> materials) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          _buildInfoCard("Total Materials", "15", Icons.inventory_2, Colors.blue),
-          _buildInfoCard("Low Stock", "3", Icons.warning_amber_rounded, Colors.orange),
-          _buildInfoCard("Stock Value", "12,500 EGP", Icons.account_balance_wallet_outlined, Colors.green),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildInfoCard(String title, String value, IconData icon, Color color) {
     return Container(
@@ -303,15 +289,23 @@ void initState() {
   }
 
   Widget _buildAnalytics() {
-    return Center(
+    final userData = Provider.of<UserData>(context);
+    final analytics = userData.analytics;
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          _buildInfoCard("Total Products", analytics?['totalProducts']?.toString() ?? "0", Icons.inventory_2_outlined, Colors.blue),
+          _buildInfoCard("Total Orders", analytics?['totalOrders']?.toString() ?? "0", Icons.list_alt_rounded, Colors.orange),
+          _buildInfoCard("Total Revenue", "${analytics?['totalRevenue']?.toString() ?? "0"} EGP", Icons.account_balance_wallet_outlined, Colors.green),
+          _buildInfoCard("Low Stock Materials", analytics?['lowStockCount']?.toString() ?? "0", Icons.warning_amber_rounded, Colors.red),
+          const SizedBox(height: 20),
           const Text(
             "Material Usage",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E232C)),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           SizedBox(
             width: 150,
             height: 150,
@@ -322,7 +316,7 @@ void initState() {
               valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           const Text("65% Capacity Used", style: TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),

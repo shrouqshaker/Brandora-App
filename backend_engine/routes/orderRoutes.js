@@ -50,4 +50,26 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Update order status (Seller only)
+router.put('/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+
+        const order = await Order.findOneAndUpdate(
+            { _id: req.params.id, sellerId: req.user.uid },
+            { status },
+            { new: true }
+        );
+
+        if (!order) return res.status(404).json({ message: 'Order not found or not authorized' });
+
+        res.json(order);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;

@@ -14,7 +14,12 @@ class _StoreScreenState extends State<StoreScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProductsData>(context, listen: false).fetchProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userData = Provider.of<UserData>(context, listen: false);
+      Provider.of<ProductsData>(context, listen: false).fetchProducts(
+        role: userData.role == 'seller' ? 'seller' : null,
+      );
+    });
   }
 
   @override

@@ -106,15 +106,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor),
                           ),
                           const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(order['status']).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              order['status'],
-                              style: TextStyle(color: _getStatusColor(order['status']), fontSize: 10, fontWeight: FontWeight.bold),
+                          GestureDetector(
+                            onTap: () {
+                              final userData = Provider.of<UserData>(context, listen: false);
+                              if (userData.role == 'seller') {
+                                _showStatusPicker(context, order['_id'], order['status']);
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: _getStatusColor(order['status']).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    order['status'],
+                                    style: TextStyle(color: _getStatusColor(order['status']), fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                  if (Provider.of<UserData>(context, listen: false).role == 'seller')
+                                    const Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -124,6 +139,40 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 );
               },
             ),
+    );
+  }
+
+  void _showStatusPicker(BuildContext context, String orderId, String currentStatus) {
+    final orderData = Provider.of<OrderData>(context, listen: false);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Update Order Status", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              ...['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map((status) {
+                return ListTile(
+                  title: Text(status),
+                  trailing: status == currentStatus ? const Icon(Icons.check, color: Colors.green) : null,
+                  onTap: () async {
+                    Navigator.pop(context);
+                    bool success = await orderData.updateOrderStatus(orderId, status);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(success ? "Status Updated!" : "Update Failed"), backgroundColor: success ? Colors.green : Colors.red),
+                    );
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 

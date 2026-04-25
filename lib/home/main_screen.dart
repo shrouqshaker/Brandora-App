@@ -34,6 +34,8 @@ class _MainScreenState extends State<MainScreen> {
       const AccountScreen(),
     ];
 
+    final lowStockCount = userData.analytics?['lowStockCount'] ?? 0;
+
     return Scaffold(
       body: SafeArea(child: pages[_selectedIndex]),
       bottomNavigationBar: SafeArea(
@@ -48,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
             children: isSeller ? [
               _navItem(Icons.store_outlined, "MARKET", 0),
               _navItem(Icons.list_alt_rounded, "ORDERS", 1),
-              _navItem(Icons.inventory_2, "INVENTORY", 2),
+              _navItem(Icons.inventory_2, "INVENTORY", 2, badgeCount: lowStockCount),
               _navItem(Icons.precision_manufacturing_outlined, "PRODUCTION", 3),
               _navItem(Icons.person_outline, "ACCOUNT", 4),
             ] : [
@@ -62,14 +64,34 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _navItem(IconData icon, String label, int index) {
+  Widget _navItem(IconData icon, String label, int index, {int badgeCount = 0}) {
     bool isActive = _selectedIndex == index;
     return GestureDetector(
       onTap: () => setState(() => _selectedIndex = index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: isActive ? const Color(0xFF3F51B5) : Colors.grey),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Icon(icon, color: isActive ? const Color(0xFF3F51B5) : Colors.grey),
+              if (badgeCount > 0)
+                Positioned(
+                  right: -5,
+                  top: -5,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    child: Text(
+                      badgeCount.toString(),
+                      style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: 4),
           Text(label, style: TextStyle(
             color: isActive ? const Color(0xFF3F51B5) : Colors.grey,

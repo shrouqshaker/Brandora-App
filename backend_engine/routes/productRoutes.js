@@ -81,7 +81,14 @@ router.post('/', upload.single('image'), async (req, res) => {
         });
 
         const saved = await newProduct.save();
-        res.status(201).json(saved);
+        
+        // Fetch updated total products for real-time update
+        const totalProducts = await Product.countDocuments({ ownerId: req.user.uid });
+
+        res.status(201).json({
+            product: saved,
+            totalProducts: totalProducts
+        });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

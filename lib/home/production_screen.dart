@@ -25,10 +25,8 @@ class _ProductionScreenState extends State<ProductionScreen> {
   final TextEditingController _materialQtyController = TextEditingController();
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _productQtyController = TextEditingController();
-  final TextEditingController _manualPriceController = TextEditingController(); 
   final TextEditingController _marginController = TextEditingController();
   final TextEditingController _additionalExpensesController = TextEditingController();
-  final TextEditingController _purchasePriceController = TextEditingController();
 
   String? _selectedMaterial; 
   String? _errorMessage; 
@@ -72,37 +70,26 @@ void initState() {
   }
 
   final TextEditingController _costPriceController = TextEditingController();
-  final TextEditingController _profitController = TextEditingController();
-  
-  double _profitPercentage = 0.0;
 
   void _updateFinalPrice() {
     double productQty = double.tryParse(_productQtyController.text) ?? 1.0;
     if (productQty <= 0) productQty = 1.0;
 
     double additionalExpenses = double.tryParse(_additionalExpensesController.text) ?? 0.0;
+    double profitMargin = double.tryParse(_marginController.text) ?? 0.0;
     
+    double baseCost = 0.0;
     if (_includesMaterials) {
-      double marginPercent = double.tryParse(_marginController.text) ?? 0.0;
-      double baseCost = _totalMaterialsCost + additionalExpenses;
-      setState(() {
-        double totalFinalPrice = baseCost + (baseCost * (marginPercent / 100));
-        _finalPriceWithMargin = totalFinalPrice / productQty;
-      });
+      baseCost = _totalMaterialsCost + additionalExpenses;
     } else {
       double costPrice = double.tryParse(_costPriceController.text) ?? 0.0;
-      double profit = double.tryParse(_profitController.text) ?? 0.0;
-      
-      setState(() {
-        double totalCost = costPrice + additionalExpenses;
-        if (totalCost > 0) {
-          _profitPercentage = (profit / totalCost) * 100;
-        } else {
-          _profitPercentage = 0.0;
-        }
-        _finalPriceWithMargin = (totalCost + profit) / productQty;
-      });
+      baseCost = costPrice + additionalExpenses;
     }
+
+    setState(() {
+      double totalSellingPrice = baseCost + (baseCost * (profitMargin / 100));
+      _finalPriceWithMargin = totalSellingPrice / productQty;
+    });
   }
 
   @override
@@ -152,7 +139,7 @@ void initState() {
                 _buildLabel("COST PRICE (EGP)"),
                 _buildField("Total cost price", controller: _costPriceController, isNumber: true, onChanged: (_) => _updateFinalPrice()),
                 const SizedBox(height: 20),
-                _buildManualPricingCard(),
+                _buildPricingCard(),
               ],
         
               if (_includesMaterials) ...[
@@ -197,11 +184,11 @@ void initState() {
                   return;
                 }
 
-                // 3. Validation for Manual Price (When toggle is OFF)
+                // 3. Validation for Cost Price (When toggle is OFF)
                 if (!_includesMaterials) {
-                  double manualPrice = double.tryParse(_manualPriceController.text) ?? 0.0;
-                  if (manualPrice <= 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid price for the product')));
+                  double costPrice = double.tryParse(_costPriceController.text) ?? 0.0;
+                  if (costPrice <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid cost price for the product')));
                     return;
                   }
                 }
@@ -243,17 +230,21 @@ void initState() {
 
                 String finalPrice = _finalPriceWithMargin.toStringAsFixed(2);
 
-                final success = await productsData.addProduct(ProductModel(
-                  name: _productNameController.text,
-                  quantity: _productQtyController.text,
-                  price: finalPrice,
-                  imagePath: _image?.path,
-                  usedMaterials: List.from(_addedMaterials),
-                  costPrice: _costPriceController.text,
-                  additionalExpenses: _additionalExpensesController.text,
-                  profit: _profitController.text,
-                  profitPercentage: _profitPercentage.toString(),
-                ));
+                final success = await productsData.addProduct(
+                  ProductModel(
+                    name: _productNameController.text,
+                    quantity: _productQtyController.text,
+                    price: finalPrice,
+                    imagePath: _image?.path,
+                    usedMaterials: List.from(_addedMaterials),
+                    costPrice: _includesMaterials ? _totalMaterialsCost.toString() : _costPriceController.text,
+                    additionalExpenses: _additionalExpensesController.text,
+                    profitPercentage: _marginController.text,
+                  ),
+                  onTotalProductsUpdate: (newTotal) {
+                    context.read<UserData>().updateAnalyticsDirectly(newTotal);
+                  },
+                );
 
                 // 6. Deduct materials from server if applicable
                 if (success && _includesMaterials) {
@@ -351,16 +342,13 @@ void initState() {
   void _clearFields() {
     _productNameController.clear(); 
     _productQtyController.clear(); 
-    _manualPriceController.clear();
     _marginController.clear();
     _additionalExpensesController.clear();
     _costPriceController.clear();
-    _profitController.clear();
     setState(() { 
       _addedMaterials.clear(); 
       _totalMaterialsCost = 0.0; 
       _finalPriceWithMargin = 0.0; 
-      _profitPercentage = 0.0;
       _image = null; 
       _errorMessage = null; 
     });
@@ -385,40 +373,17 @@ void initState() {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
-          _buildPriceRow("Total Materials Cost", "${_totalMaterialsCost.toStringAsFixed(2)} EGP", Colors.grey),
-          const SizedBox(height: 8),
+          if (_includesMaterials) ...[
+            _buildPriceRow("Total Materials Cost", "${_totalMaterialsCost.toStringAsFixed(2)} EGP", Colors.grey),
+            const SizedBox(height: 8),
+          ],
           _buildPriceRow("Final Selling Price", "${_finalPriceWithMargin.toStringAsFixed(2)} EGP", primaryColor, isBold: true),
         ],
       ),
     );
   }
 
-  Widget _buildManualPricingCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F7FF),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildLabel("ADDITIONAL EXPENSES (EGP)"),
-          _buildPricingField(_additionalExpensesController),
-          const SizedBox(height: 15),
-          _buildLabel("PROFIT (EGP)"),
-          _buildPricingField(_profitController),
-          const SizedBox(height: 10),
-          Text("Calculated Margin: ${_profitPercentage.toStringAsFixed(1)}%", style: const TextStyle(color: Colors.grey, fontSize: 12)),
-          const SizedBox(height: 20),
-          const Divider(),
-          const SizedBox(height: 10),
-          _buildPriceRow("Final Selling Price", "${_finalPriceWithMargin.toStringAsFixed(2)} EGP", primaryColor, isBold: true),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildPricingField(TextEditingController controller) {
     return Container(
