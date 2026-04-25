@@ -51,7 +51,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.receipt_long_outlined, size: 80, color: Colors.grey.withValues(alpha: 0.5)),
+                      Icon(Icons.receipt_long_outlined, size: 80, color: Colors.grey.withOpacity(0.5)),
                       const SizedBox(height: 16),
                       const Text(
                         "No orders yet.",
@@ -72,7 +72,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
                     ],
                   ),
                   child: Row(
@@ -80,7 +80,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: _getStatusColor(order['status']).withValues(alpha: 0.1),
+                          color: _getStatusColor(order['status']).withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.receipt_long_outlined, color: _getStatusColor(order['status'])),
@@ -116,7 +116,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(order['status']).withValues(alpha: 0.1),
+                                color: _getStatusColor(order['status']).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
