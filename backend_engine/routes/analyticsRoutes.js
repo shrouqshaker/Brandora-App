@@ -6,7 +6,7 @@ const verifyToken = require('../middleware/authMiddleware');
 
 router.use(verifyToken);
 
-// ─── GET /analytics/seller — Real seller analytics ───────────────────────────
+// Seller analytics
 router.get('/seller', async (req, res) => {
     try {
         const Material = require('../models/Material'); // Load Material model

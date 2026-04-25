@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:winterproject/core/services/api_service.dart';
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 1. MODEL — Raw Material
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// MODEL — Raw Material
+
 class MaterialModel {
   String? id;
   String name;
@@ -39,9 +39,9 @@ class MaterialModel {
       };
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 2. MODEL — Finished Product
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// MODEL — Finished Product
+
 class ProductModel {
   String? id;
   String name;
@@ -83,9 +83,9 @@ class ProductModel {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 3. PROVIDER — Materials Data
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// PROVIDER — Materials Data
+
 class MaterialsData extends ChangeNotifier {
   List<MaterialModel> _materials = [];
   bool _isLoading = false;
@@ -95,7 +95,7 @@ class MaterialsData extends ChangeNotifier {
   bool                get isLoading  => _isLoading;
   String?             get error      => _error;
 
-  // ── Fetch all materials from server ─────────────────────────────────────────
+  // Fetch all materials from server
   Future<void> fetchMaterials() async {
     _isLoading = true;
     _error = null;
@@ -118,7 +118,7 @@ class MaterialsData extends ChangeNotifier {
     }
   }
 
-  // ── Add a new material ───────────────────────────────────────────────────────
+  // Add a new material to server
   Future<bool> addMaterial(MaterialModel material) async {
     try {
       final response = await ApiService.post('/materials', material.toJson());
@@ -138,7 +138,7 @@ class MaterialsData extends ChangeNotifier {
     }
   }
 
-  // ── Remove a material by its list index ─────────────────────────────────────
+  // Remove a material by its list index
   Future<bool> removeMaterial(int index) async {
     if (index < 0 || index >= _materials.length) return false;
     final id = _materials[index].id;
@@ -163,7 +163,7 @@ class MaterialsData extends ChangeNotifier {
     }
   }
 
-  // ── Update an existing material by its list index ────────────────────────────
+  // Update an existing material by its list index
   Future<bool> updateExistingMaterial(int index, MaterialModel updated) async {
     if (index < 0 || index >= _materials.length) return false;
     final id = _materials[index].id;
@@ -214,9 +214,9 @@ class MaterialsData extends ChangeNotifier {
   List<String> getMaterialNames() => _materials.map((m) => m.name).toList();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 4. PROVIDER — Products Data
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// PROVIDER — Products Data
+
 class ProductsData extends ChangeNotifier {
   List<ProductModel> _products = [];
   bool _isLoading = false;
@@ -333,9 +333,9 @@ class ProductsData extends ChangeNotifier {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 5. PROVIDER — User Data
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// PROVIDER — User Data
+
 class UserData extends ChangeNotifier {
   Map<String, dynamic>? _userProfile;
   bool _isLoading = false;
@@ -417,9 +417,9 @@ class UserData extends ChangeNotifier {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 6. PROVIDER — Orders Data
-// ═══════════════════════════════════════════════════════════════════════════════
+
+// PROVIDER — Orders Data
+
 class OrderData extends ChangeNotifier {
   List<dynamic> _orders = [];
   bool _isLoading = false;

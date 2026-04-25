@@ -9,7 +9,7 @@ const fs = require('fs');
 // All product routes require authentication
 router.use(verifyToken);
 
-// ─── Multer setup for image uploads ─────────────────────────────────────────
+// Multer setup for image uploads
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -29,7 +29,7 @@ const upload = multer({
     },
 });
 
-// ─── GET products (Customer sees ALL, Seller sees OWN) ────────────────────────
+// GET products (Customer sees ALL, Seller sees OWN)
 router.get('/', async (req, res) => {
     try {
         const { role } = req.query; // Expect role to be passed from frontend
@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ─── POST create a product (multipart/form-data with optional image) ─────────
+// POST create a product
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         const { name, quantity, price, includesMaterials, usedMaterials, costPrice, additionalExpenses, profit, profitPercentage } = req.body;
@@ -94,7 +94,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     }
 });
 
-// ─── DELETE a product by ID ───────────────────────────────────────────────────
+// DELETE a product by ID
 router.delete('/:id', async (req, res) => {
     try {
         const deleted = await Product.findOneAndDelete({ _id: req.params.id, ownerId: req.user.uid });
